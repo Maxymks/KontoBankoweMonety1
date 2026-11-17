@@ -1,32 +1,51 @@
-﻿namespace KontoBankoweMonety
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
+
+namespace KontoBankoweMonety
 {
-	internal class KontoBankowe
-	{
-		private decimal _saldo;
-		private static int _następnyNumer = 1;
+    internal class KontoBankowe
+    {
+        private static int _licznikKont = 0;
 
-		public int Numer { get; }
+        private decimal _saldo;
 
-		public KontoBankowe(decimal saldoPoczatkowe = 0)
-		{
-			if (saldoPoczatkowe < 0)
-				throw new ArgumentException("Stan początkowy nie może być ujemny.");
+        // Historia wpłat
+        private List<decimal> _historiaWplat = new List<decimal>();
 
-			_saldo = saldoPoczatkowe;
-			Numer = _następnyNumer++;
-		}
+        public KontoBankowe()
+        {
+            _licznikKont++;
+            NumerKonta = _licznikKont;
+        }
 
-		public decimal StanKonta()
-		{
-			return _saldo;
-		}
+        public int NumerKonta { get; }
 
-		public void Wplac(decimal kwota)
-		{
-			if (kwota < 0)
-				throw new ArgumentException("Kwota nie może być ujemna.");
+        public decimal StanKonta()
+        {
+            return _saldo;
+        }
 
-			_saldo += kwota;
-		}
-	}
+        public void Wplac(decimal kwota)
+        {
+            _saldo += kwota;
+
+            // Zapisujemy wpłatę w historii
+            _historiaWplat.Add(kwota);
+        }
+
+        // Wyświetlanie historii wpłat
+        public void PokazHistorieWplat()
+        {
+            Console.WriteLine("----- HISTORIA WPŁAT -----");
+
+            Console.WriteLine($"Liczba wpłat: {_historiaWplat.Count}");
+
+            foreach (decimal kwota in _historiaWplat)
+            {
+                Console.WriteLine($"Wpłata: {kwota} zł");
+            }
+        }
+    }
 }
